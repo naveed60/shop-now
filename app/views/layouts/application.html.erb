@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Shop Now" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Shop Now">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <div class="min-h-screen">
+      <header class="fixed inset-x-0 top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <%= link_to root_path, class: "flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-900" do %>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-bold">SN</span>
+            <span>Shop&nbsp;Now</span>
+          <% end %>
+
+          <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 sm:flex">
+            <%= link_to "Shop", products_path, class: "hover:text-slate-900 transition" %>
+            <%= link_to "Cart (#{current_cart.total_items})", cart_path, class: "hover:text-slate-900 transition" %>
+            <% if user_signed_in? %>
+              <%= link_to "Account", edit_user_registration_path, class: "hover:text-slate-900 transition" %>
+              <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-rose-600 hover:text-rose-500" %>
+            <% else %>
+              <%= link_to "Sign in", new_user_session_path, class: "hover:text-slate-900 transition" %>
+            <% end %>
+          </nav>
+
+          <div class="flex items-center gap-3 sm:hidden">
+            <%= link_to cart_path, class: "relative rounded-full border border-slate-200 p-2 text-slate-600" do %>
+              <span class="sr-only">Cart</span>
+              🛒
+              <% if current_cart.total_items.positive? %>
+                <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-[10px] font-semibold text-white"><%= current_cart.total_items %></span>
+              <% end %>
+            <% end %>
+            <% if user_signed_in? %>
+              <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-sm font-semibold text-slate-900" %>
+            <% else %>
+              <%= link_to "Sign in", new_user_session_path, class: "text-sm font-semibold text-slate-900" %>
+            <% end %>
+          </div>
+        </div>
+      </header>
+
+      <main class="px-4 pb-16 pt-28 sm:pt-32">
+        <div class="mx-auto flex max-w-6xl flex-col gap-6">
+          <% flash.each do |key, value| %>
+            <div class="flex items-center justify-between rounded-xl border px-4 py-3 text-sm <%= flash_class(key) %>" data-controller="dismiss">
+              <span><%= value %></span>
+              <button class="text-xs font-semibold uppercase tracking-wide" data-action="click->dismiss#hide">Close</button>
+            </div>
+          <% end %>
+          <%= yield %>
+        </div>
+      </main>
+
+      <footer class="border-t border-slate-200 bg-white/80 py-10">
+        <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+          <p>&copy; <%= Time.current.year %> Shop Now. Built with Ruby on Rails, Tailwind CSS, and PostgreSQL.</p>
+          <div class="flex items-center gap-4">
+            <span>Need help?</span>
+            <a href="mailto:support@example.com" class="font-medium text-slate-900">support@example.com</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

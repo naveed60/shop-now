@@ -1,0 +1,30 @@
+<div class="mx-auto max-w-md space-y-6 rounded-3xl border border-slate-200 bg-white/90 p-8 shadow">
+  <div class="space-y-2 text-center">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Welcome back</p>
+    <h2 class="text-3xl font-semibold text-slate-900">Sign in to continue</h2>
+    <p class="text-sm text-slate-500">Manage your orders, wishlist, and profile.</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-4" }) do |f| %>
+    <div>
+      <%= f.label :email, class: "text-xs font-semibold uppercase tracking-wide text-slate-500" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring-slate-900/10" %>
+    </div>
+
+    <div>
+      <%= f.label :password, class: "text-xs font-semibold uppercase tracking-wide text-slate-500" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring-slate-900/10" %>
+    </div>
+
+    <% if devise_mapping.rememberable? %>
+      <label class="flex items-center gap-3 text-sm text-slate-600">
+        <%= f.check_box :remember_me, class: "h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900/20" %>
+        Remember me
+      </label>
+    <% end %>
+
+    <%= f.submit "Log in", class: "w-full rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5" %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>

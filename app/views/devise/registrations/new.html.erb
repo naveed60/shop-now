@@ -1,0 +1,47 @@
+<div class="mx-auto max-w-xl space-y-6 rounded-3xl border border-slate-200 bg-white/90 p-8 shadow">
+  <div class="space-y-2 text-center">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Create account</p>
+    <h2 class="text-3xl font-semibold text-slate-900">Join the Shop Now community</h2>
+    <p class="text-sm text-slate-500">Set up your profile to save carts, wishlists, and orders.</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <%= f.label :first_name, class: "text-xs font-semibold uppercase tracking-wide text-slate-500" %>
+        <%= f.text_field :first_name, autofocus: true, autocomplete: "given-name", class: "mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring-slate-900/10" %>
+      </div>
+      <div>
+        <%= f.label :last_name, class: "text-xs font-semibold uppercase tracking-wide text-slate-500" %>
+        <%= f.text_field :last_name, autocomplete: "family-name", class: "mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring-slate-900/10" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :email, class: "text-xs font-semibold uppercase tracking-wide text-slate-500" %>
+      <%= f.email_field :email, autocomplete: "email", class: "mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring-slate-900/10" %>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <label>Password</label>
+          <% if @minimum_password_length %>
+            <span class="text-[10px] font-semibold text-slate-400"><%= @minimum_password_length %> characters minimum</span>
+          <% end %>
+        </div>
+        <%= f.password_field :password, autocomplete: "new-password", class: "mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring-slate-900/10" %>
+      </div>
+      <div>
+        <%= f.label :password_confirmation, class: "text-xs font-semibold uppercase tracking-wide text-slate-500" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-slate-900 focus:ring-slate-900/10" %>
+      </div>
+    </div>
+
+    <%= f.submit "Create account", class: "w-full rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5" %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>
