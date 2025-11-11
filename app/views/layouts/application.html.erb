@@ -22,44 +22,98 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased" data-controller="sidebar">
     <div class="min-h-screen">
-      <header class="fixed inset-x-0 top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <div class="fixed inset-y-0 z-40 flex">
+        <div class="pointer-events-none fixed inset-0 bg-slate-900/50 opacity-0 transition" data-sidebar-target="overlay" data-action="click->sidebar#close"></div>
+        <aside class="fixed inset-y-0 left-0 z-50 flex w-[320px] -translate-x-full flex-col overflow-y-auto rounded-r-3xl bg-white shadow-2xl transition-transform duration-300" data-sidebar-target="panel">
+          <div class="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+            <%= link_to root_path, class: "flex items-center gap-3 text-lg font-semibold text-slate-900" do %>
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-violet-600 text-white font-bold">SN</span>
+              <div class="leading-tight">
+                <p>Shop Now</p>
+                <p class="text-xs font-medium text-slate-500">Modern ecommerce</p>
+              </div>
+            <% end %>
+            <button class="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-slate-900" data-action="click->sidebar#close">
+              ✕
+              <span class="sr-only">Close menu</span>
+            </button>
+          </div>
+          <div class="space-y-5 px-6 py-6">
+            <% if user_signed_in? %>
+              <div class="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Signed in as</p>
+                <p class="text-lg font-semibold text-slate-900"><%= current_user.full_name %></p>
+                <div class="mt-3 flex gap-3 text-sm font-semibold">
+                  <%= link_to "Account", edit_user_registration_path, class: "text-violet-600" %>
+                  <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-rose-500" %>
+                </div>
+              </div>
+            <% else %>
+              <div class="rounded-2xl border border-slate-100 bg-gradient-to-br from-sky-400 to-violet-500 px-4 py-5 text-white shadow-lg">
+                <p class="text-xl font-semibold">Hello there 👋</p>
+                <p class="text-sm text-white/80">Log in to track orders, save carts, and manage wishlists.</p>
+                <div class="mt-4 flex gap-3">
+                  <%= link_to "Login", new_user_session_path, class: "flex-1 rounded-full bg-white px-4 py-2 text-center text-sm font-semibold text-slate-900" %>
+                  <%= link_to "Register", new_user_registration_path, class: "flex-1 rounded-full border border-white px-4 py-2 text-center text-sm font-semibold text-white" %>
+                </div>
+              </div>
+            <% end %>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Quick links</p>
+              <ul class="mt-3 space-y-3 text-sm font-medium text-slate-700">
+                <li><%= link_to "Track my order", cart_path, class: "flex items-center gap-2 hover:text-violet-600" %></li>
+                <li><%= link_to "Launch a complaint", "#", class: "flex items-center gap-2 hover:text-violet-600" %></li>
+                <li><%= link_to "Admin area", new_admin_user_session_path, class: "flex items-center gap-2 hover:text-violet-600" %></li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Categories</p>
+              <ul class="mt-3 space-y-2">
+                <% (@navigation_categories || []).each do |category| %>
+                  <li>
+                    <%= link_to products_path(category_id: category.id), class: "flex items-center justify-between rounded-2xl border border-slate-100 px-3 py-2 text-sm font-semibold text-slate-700 hover:border-violet-200 hover:text-violet-600" do %>
+                      <span><%= category.name %></span>
+                      <span class="text-xs font-semibold text-slate-400">→</span>
+                    <% end %>
+                  </li>
+                <% end %>
+                <% if (@navigation_categories || []).empty? %>
+                  <li class="text-sm text-slate-400">No categories yet.</li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200 bg-white">
+        <div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4">
+          <button class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 text-slate-700 hover:border-violet-200 hover:text-violet-600" data-action="click->sidebar#toggle">
+            ☰
+            <span class="sr-only">Open menu</span>
+          </button>
           <%= link_to root_path, class: "flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-900" do %>
-            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-bold">SN</span>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-violet-600 text-white font-bold">SN</span>
             <span>Shop&nbsp;Now</span>
           <% end %>
-
-          <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 sm:flex">
-            <%= link_to "Shop", products_path, class: "hover:text-slate-900 transition" %>
-            <%= link_to "Cart (#{current_cart.total_items})", cart_path, class: "hover:text-slate-900 transition" %>
+          <%= form_with url: products_path, method: :get, local: true, class: "hidden flex-1 items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-600 focus-within:border-violet-500 sm:flex" do %>
+            <span>🔍</span>
+            <%= text_field_tag :query, params[:query], placeholder: "Search products…", class: "w-full border-0 bg-transparent text-sm focus:outline-none", autocomplete: "off" %>
+          <% end %>
+          <div class="ml-auto flex items-center gap-3 text-sm font-semibold text-slate-600">
+            <%= link_to "Cart (#{current_cart.total_items})", cart_path, class: "rounded-full border border-slate-200 px-4 py-2 hover:border-violet-200 hover:text-violet-600" %>
             <% if user_signed_in? %>
-              <%= link_to "Account", edit_user_registration_path, class: "hover:text-slate-900 transition" %>
-              <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-rose-600 hover:text-rose-500" %>
+              <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "hidden rounded-full border border-rose-200 px-4 py-2 text-rose-600 hover:border-rose-300 sm:inline-flex" %>
             <% else %>
-              <%= link_to "Sign in", new_user_session_path, class: "hover:text-slate-900 transition" %>
-            <% end %>
-          </nav>
-
-          <div class="flex items-center gap-3 sm:hidden">
-            <%= link_to cart_path, class: "relative rounded-full border border-slate-200 p-2 text-slate-600" do %>
-              <span class="sr-only">Cart</span>
-              🛒
-              <% if current_cart.total_items.positive? %>
-                <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-[10px] font-semibold text-white"><%= current_cart.total_items %></span>
-              <% end %>
-            <% end %>
-            <% if user_signed_in? %>
-              <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-sm font-semibold text-slate-900" %>
-            <% else %>
-              <%= link_to "Sign in", new_user_session_path, class: "text-sm font-semibold text-slate-900" %>
+              <%= link_to "Sign in", new_user_session_path, class: "hidden rounded-full border border-violet-200 px-4 py-2 text-violet-600 hover:border-violet-300 sm:inline-flex" %>
             <% end %>
           </div>
         </div>
       </header>
 
-      <main class="px-4 pb-16 pt-28 sm:pt-32">
+      <main class="px-4 pb-16 pt-28 sm:pt-36">
         <div class="mx-auto flex max-w-6xl flex-col gap-6">
           <% flash.each do |key, value| %>
             <div class="flex items-center justify-between rounded-xl border px-4 py-3 text-sm <%= flash_class(key) %>" data-controller="dismiss">
