@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
 
   before_action :attach_cart_to_user
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :load_navigation_categories
 
   helper_method :current_cart
 
@@ -32,5 +33,11 @@ class ApplicationController < ActionController::Base
     extra_params = %i[first_name last_name]
     devise_parameter_sanitizer.permit(:sign_up, keys: extra_params)
     devise_parameter_sanitizer.permit(:account_update, keys: extra_params)
+  end
+
+  def load_navigation_categories
+    @navigation_categories = Category.order(:name).limit(12)
+  rescue ActiveRecord::StatementInvalid
+    @navigation_categories = []
   end
 end
