@@ -91,26 +91,30 @@
       </div>
 
       <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200 bg-white">
-        <div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4">
-          <button class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 text-slate-700 hover:border-violet-200 hover:text-violet-600" data-action="click->sidebar#toggle">
-            ☰
-            <span class="sr-only">Open menu</span>
-          </button>
-          <%= link_to root_path, class: "flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-900" do %>
-            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-violet-600 text-white font-bold">SN</span>
-            <span>Shop&nbsp;Now</span>
-          <% end %>
-          <%= form_with url: products_path, method: :get, local: true, class: "hidden flex-1 items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-600 focus-within:border-violet-500 sm:flex" do %>
-            <span>🔍</span>
-            <%= text_field_tag :query, params[:query], placeholder: "Search products…", class: "w-full border-0 bg-transparent text-sm focus:outline-none", autocomplete: "off" %>
-          <% end %>
-          <div class="ml-auto flex items-center gap-3 text-sm font-semibold text-slate-600">
-            <%= link_to "Cart (#{current_cart.total_items})", cart_path, class: "rounded-full border border-slate-200 px-4 py-2 hover:border-violet-200 hover:text-violet-600" %>
-            <% if user_signed_in? %>
-              <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "hidden rounded-full border border-rose-200 px-4 py-2 text-rose-600 hover:border-rose-300 sm:inline-flex" %>
-            <% else %>
-              <%= link_to "Sign in", new_user_session_path, class: "hidden rounded-full border border-violet-200 px-4 py-2 text-violet-600 hover:border-violet-300 sm:inline-flex" %>
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+          <div class="flex items-center gap-3">
+            <button class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 text-slate-700 hover:border-violet-200 hover:text-violet-600" data-action="click->sidebar#toggle">
+              ☰
+              <span class="sr-only">Open menu</span>
+            </button>
+            <%= link_to root_path, class: "flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-900" do %>
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-violet-600 text-white font-bold">SN</span>
+              <span>Shop&nbsp;Now</span>
             <% end %>
+          </div>
+          <div class="flex flex-1 items-center justify-end gap-3">
+            <%= form_with url: products_path, method: :get, local: true, class: "hidden w-full max-w-sm flex-1 items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-600 focus-within:border-violet-500 sm:flex" do %>
+              <span>🔍</span>
+              <%= text_field_tag :query, params[:query], placeholder: "Search products…", class: "w-full border-0 bg-transparent text-sm focus:outline-none", autocomplete: "off" %>
+            <% end %>
+            <div class="flex items-center gap-3 text-sm font-semibold text-slate-600">
+              <%= link_to "Cart (#{current_cart.total_items})", cart_path, class: "rounded-full border border-slate-200 px-4 py-2 hover:border-violet-200 hover:text-violet-600" %>
+              <% if user_signed_in? %>
+                <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "hidden rounded-full border border-rose-200 px-4 py-2 text-rose-600 hover:border-rose-300 sm:inline-flex" %>
+              <% else %>
+                <%= link_to "Sign in", new_user_session_path, class: "hidden rounded-full border border-violet-200 px-4 py-2 text-violet-600 hover:border-violet-300 sm:inline-flex" %>
+              <% end %>
+            </div>
           </div>
         </div>
       </header>
