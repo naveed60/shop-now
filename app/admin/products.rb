@@ -3,6 +3,9 @@ ActiveAdmin.register Product do
 
   includes :category
 
+  scope :all, default: true
+  scope :featured
+
   index do
     selectable_column
     id_column
@@ -17,6 +20,8 @@ ActiveAdmin.register Product do
   filter :name
   filter :category
   filter :featured
+  filter :price_cents, label: "Price (cents)"
+  filter :created_at
 
   form do |f|
     f.semantic_errors
@@ -31,5 +36,23 @@ ActiveAdmin.register Product do
       f.input :details
     end
     f.actions
+  end
+
+  show do
+    attributes_table do
+      row :id
+      row :name
+      row :category
+      row("Price") { number_to_currency(product.price_cents / 100.0) }
+      row :stock
+      row :featured
+      row :image_url
+      row :description
+      row :details do
+        pre JSON.pretty_generate(product.details || {})
+      end
+      row :created_at
+      row :updated_at
+    end
   end
 end
