@@ -43,7 +43,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 gem "devise", "~> 5.0"
 gem "activeadmin", "~> 3.2"
-gem "faker", "~> 3.5", group: %i[ development test ]
+gem "faker", "~> 3.6", group: %i[ development test ]
 gem "sassc", "~> 2.4"
 
 group :development, :test do
